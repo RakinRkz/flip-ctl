@@ -1,0 +1,6 @@
+# Build output (publish APKs through GitHub Releases instead)
+app/build/
+
+# Signing keys must never be committed
+*.jks
+*.keystore

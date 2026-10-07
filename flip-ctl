@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# flip-ctl: run flipctl.sh on the phone connected over adb (USB or wireless debugging).
+# Takes the same commands as flipctl.sh (see `flip-ctl help`). Set ANDROID_SERIAL to pick a phone.
+set -euo pipefail
+
+script_dir=$(dirname "$(readlink -f "$0")")
+remote=/data/local/tmp/flipctl.sh
+
+command -v adb >/dev/null || { echo "flip-ctl: adb is not installed" >&2; exit 1; }
+if [[ $(adb get-state 2>/dev/null) != device ]]; then
+    echo "flip-ctl: no phone ready. Turn on USB debugging, plug in, accept the prompt, then check 'adb devices'." >&2
+    exit 1
+fi
+
+adb push "$script_dir/flipctl.sh" "$remote" >/dev/null
+exec adb shell sh "$remote" "$@"
